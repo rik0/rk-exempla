@@ -1,3 +1,5 @@
+import bisect
+
 import Tkinter as tk
 
 class NumberModel(object):
@@ -10,12 +12,34 @@ class NumberModel(object):
     def decrement(self):
         self.value -= 1
 
-class Controller(object):
-    def __init__(self, model):
-        self.model = model
+class GraphModel(object):
+    def __init__(self):
+        self.points = []
 
-    def __getattr__(self, attr_name):
-        return getattr(self.model, attr_name)
+    def add_point(self, point):
+        bisect.insort(self.points, point)
+
+    def __len__(self):
+        return len(self.points)
+
+
+class Controller(object):
+    def __init__(self, number_model, graph_model):
+        self.number_model = number_model
+        self.graph_model = graph_model
+
+    def increment(self):
+        self.number_model.increment()
+        self._update_graph()
+
+    def decrement(self):
+        self.number_model.decrement()
+        self._update_graph()
+
+    def _update_graph(self):
+        x_value = len(self.graph_model)
+        y_value = self.number_model.value
+        self.graph_model.add_point((x_value, y_value))
 
 class Window(tk.Frame):
     def __init__(self, model, controller, *args):
@@ -27,7 +51,7 @@ class Window(tk.Frame):
         self.entry.grid(row=0, columnspan=2)
         self.inc_button.grid(row=1, column=0)
         self.dec_button.grid(row=1, column=1)
-        self.quit_button.grid(row=2, columnspan=2)
+        self.quit_button.grid(row=2)
         self.pack()
 
         self.model = model
@@ -49,8 +73,9 @@ class Window(tk.Frame):
 
 if __name__ == '__main__':
     root = tk.Tk()
-    model = NumberModel()
-    controller = Controller(model)
-    w = Window(model, controller, root)
+    number_model = NumberModel()
+    graph_model = GraphModel()
+    controller = Controller(number_model, graph_model)
+    w = Window(number_model, controller, root)
 
     root.mainloop()
