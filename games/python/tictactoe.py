@@ -120,7 +120,8 @@ class Player(object):
     def next_move(self):
         return self.strategy.next_move(self.whoami, self.board)
 
-class AskTheHuman(object):
+
+class TerminalAskTheHuman(object):
     rex = re.compile('(\d+),\s+(\d+)')
 
     def tentative_move(self, tentative, whoami, board):
@@ -141,8 +142,9 @@ class AskTheHuman(object):
                 return move
 
 class Game(object):
-    def __init__(self, *args):
+    def __init__(self, ui, *args):
         self.board = Board()
+        self.ui = ui
         self.players = args
 
     def next_move(self, turn):
@@ -159,25 +161,42 @@ class Game(object):
 
     def play(self):
         for turn in it.count(1):
-            print self.board
+            ui.show_board(self.board)
             if self.board.draw():
-                print 'DRAW!'
+                ui.draw()
                 break
             possible_winner = self.board.winner()
             if possible_winner:
-                print 'Player %s won!' % possible_winner
+                ui.present_winner(possible_winner)
                 break
             move = self.next_move(turn)
             try:
                 self.perform_move(move)
             except ValueError:
-                print 'Invalid move!'
+                ui.error('Invalid move!')
                 break
             else:
                 self.notify_move(move)
 
+class TextualInterface(object):
+    def present_winner(self, winner):
+        print 'Player %s won!' % winner
+
+    def error(self, message):
+        print message
+
+    def draw(self):
+        print 'DRAW!'
+
+    def show_board(self, board):
+        print board
+
+
+
 if __name__ == '__main__':
-    game = Game(Player(NOUGHT, AskTheHuman()),
-                Player(CROSS, AskTheHuman()))
+    ui = TextualInterface()
+    game = Game(ui,
+                Player(NOUGHT, TerminalAskTheHuman()),
+                Player(CROSS, TerminalAskTheHuman()))
     game.play()
 
