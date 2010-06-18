@@ -50,7 +50,6 @@ class Board(object):
         else:
             return self._board[_pair_to_index(x_pos, y_pos)]
 
-
     def __setitem__(self, pos, val):
         if val in VALID:
             try:
@@ -108,40 +107,25 @@ class Board(object):
 
 
 class Player(object):
-    def __init__(self, symbol, strategy):
-        self.set_strategy(strategy)
-        assert symbol in VALID
-        self.strategy.symbol = symbol
-
-    def set_strategy(self, new_strategy):
-        try:
-            old_strategy = self.strategy
-        except AttributeError:
-            self.strategy = new_strategy
-        else:
-            self.strategy = new_strategy
-            self.strategy.symbol = old_strategy.symbol
+    def __init__(self, whoami, strategy):
+        assert whoami in VALID
+        self.board = Board()
+        self.strategy = strategy
+        self.whoami = whoami
 
     def notify_move(self, move):
-        try:
-            notifier = self.strategy.notify_move
-        except AttributeError:
-            pass
-        else:
-            notifier(move)
+        pos, value = move
+        self.board[pos] = value
 
-    @property
-    def symbol(self):
-        return self.strategy.symbol
-
-    def next(self):
-        return self.strategy.next()
+    def next_move(self):
+        return self.strategy.next_move(self.whoami, self.board)
 
 class AskTheHuman(object):
     rex = re.compile('(\d+),\s+(\d+)')
-    def next(self):
-        while 1:
-            line = raw_input('%s> ' % self.symbol)
+
+    def next_move(self, whoami, board):
+        for tentative in it.count(1):
+            line = raw_input('P%s: %s> ' % (whoami, tentative)).strip()
             match = self.rex.match(line)
             if match:
                 return tuple(int(g) for g in match.groups())
@@ -159,8 +143,8 @@ class Game(object):
 
     def next_move(self):
         player = self.players[self.moves % 2]
-        move = player.next()
-        return (move, player.symbol)
+        move = player.next_move()
+        return (move, player.whoami)
 
     def perform_move(self, move):
         self.board.__setitem__(*move)
