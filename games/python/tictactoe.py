@@ -123,17 +123,22 @@ class Player(object):
 class AskTheHuman(object):
     rex = re.compile('(\d+),\s+(\d+)')
 
+    def tentative_move(self, tentative, whoami, board):
+        line = raw_input('P%s: %s> ' % (whoami, tentative)).strip()
+        match = self.rex.match(line)
+        if match:
+            return tuple(int(g) for g in match.groups())
+        else:
+            try:
+                return _index_to_pair(int(line))
+            except ValueError:
+                pass
+
     def next_move(self, whoami, board):
         for tentative in it.count(1):
-            line = raw_input('P%s: %s> ' % (whoami, tentative)).strip()
-            match = self.rex.match(line)
-            if match:
-                return tuple(int(g) for g in match.groups())
-            else:
-                try:
-                    return _index_to_pair(int(line))
-                except ValueError:
-                    pass
+            move = self.tentative_move(tentative, whoami, board)
+            if board[move] == BLANK:
+                return move
 
 class Game(object):
     def __init__(self, *args):
