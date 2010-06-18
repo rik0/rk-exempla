@@ -1,5 +1,6 @@
 import re
 import itertools as it
+import random
 
 import cStringIO
 
@@ -98,6 +99,11 @@ class Board(object):
         # try to discover draws asap
         return BLANK not in self._board
 
+    def possible_moves(self):
+        for i, v in enumerate(self._board):
+            if v == BLANK:
+                yield _index_to_pair(i)
+
     def __str__(self):
         sio = cStringIO.StringIO()
         for row in self.rows():
@@ -140,6 +146,14 @@ class TerminalAskTheHuman(object):
             move = self.tentative_move(tentative, whoami, board)
             if board[move] == BLANK:
                 return move
+            else:
+                print "[ERROR] Invalid move!"
+
+class RandomPlayer(object):
+    def next_move(self, _whoami, board):
+        moves = list(board.possible_moves())
+        move = random.choice(moves)
+        return move
 
 class Game(object):
     def __init__(self, ui, *args):
@@ -195,6 +209,10 @@ class TextualInterface(object):
 
 if __name__ == '__main__':
     ui = TextualInterface()
+    game = Game(ui,
+                Player(NOUGHT, RandomPlayer()),
+                Player(CROSS, RandomPlayer()))
+    game.play()
     game = Game(ui,
                 Player(NOUGHT, TerminalAskTheHuman()),
                 Player(CROSS, TerminalAskTheHuman()))
