@@ -169,18 +169,14 @@ class Game(object):
             if possible_winner:
                 print 'Player %s won!' % possible_winner
                 break
-            for i in range(3):
-                move = self.next_move()
-                try:
-                    self.perform_move(move)
-                except ValueError:
-                    print 'Invalid move!'
-                else:
-                    self.notify_move(move)
-                    break
-            else:
-                print 'TOO MANY INVALID MOVES'
+            move = self.next_move()
+            try:
+                self.perform_move(move)
+            except ValueError:
+                print 'Invalid move!'
                 break
+            else:
+                self.notify_move(move)
 
 if __name__ == '__main__':
     game = Game(Player(NOUGHT, AskTheHuman()),
