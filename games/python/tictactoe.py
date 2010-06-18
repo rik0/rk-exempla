@@ -144,23 +144,21 @@ class Game(object):
     def __init__(self, *args):
         self.board = Board()
         self.players = args
-        self.moves = 0
 
-    def next_move(self):
-        player = self.players[self.moves % 2]
+    def next_move(self, turn):
+        player = self.players[turn % 2]
         move = player.next_move()
         return (move, player.whoami)
 
     def perform_move(self, move):
         self.board.__setitem__(*move)
-        self.moves += 1
 
     def notify_move(self, move):
         for p in self.players:
             p.notify_move(move)
 
     def play(self):
-        while 1:
+        for turn in it.count(1):
             print self.board
             if self.board.draw():
                 print 'DRAW!'
@@ -169,7 +167,7 @@ class Game(object):
             if possible_winner:
                 print 'Player %s won!' % possible_winner
                 break
-            move = self.next_move()
+            move = self.next_move(turn)
             try:
                 self.perform_move(move)
             except ValueError:
