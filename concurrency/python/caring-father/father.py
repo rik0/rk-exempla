@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import subprocess
 import select
 
@@ -16,6 +17,7 @@ for params in CHILD_PARAMETERS:
     args = [CHILD_PATH]
     args.extend(params)
     def preex():
+        time.sleep(0.2)
         print "Running %s" % str(params)
     proc = subprocess.Popen(args,
                             stdout = subprocess.PIPE,
@@ -33,30 +35,35 @@ if sys.platform == 'darwin':
     descriptors = [proc.stdout.fileno() for proc in procs]
 
     kqueue = select.kqueue()
-    kevents = [select.kevent(desc,
-                             select.KQ_FILTER_READ,
-                             select.KQ_EV_ADD,
-                             0) for desc in descriptors]
 
-    events = kqueue.control(kevents, len(kevents))
+    events = []
+    for proc in procs:
+        events.extend(kqueue.control([
+            select.kevent(proc.stdout.fileno(),
+                          select.KQ_FILTER_READ)], 10))
+        events.extend(kqueue.control([
+            select.kevent(proc.pid, select.KQ_FILTER_PROC)], 10))
 
     while events:
-        print '*', events
-        for event in events:
-            assert isinstance(event, select.kevent)
-            if event.flags & select.KQ_EV_ERROR:
-                print os.strerror(event.data)
-            elif (event.flags & select.KQ_FILTER_READ) and (event.data > 0):
-                try:
-                    proc_index = descriptors.index(event.ident)
-                except ValueError:
-                    print os.read(event.ident, event.data)
-                else:
-                    proc = procs[proc_index]
-                    print 'Process %s says: %s' % (proc.pid, proc.stdout.read(event.data))
-            if event.flags & select.KQ_EV_EOF:
-                os.close(event.ident)
-        events = kqueue.control(None, len(kevents), None)
+        event = events.pop()
+        assert isinstance(event, select.kevent)
+        if event.flags & select.KQ_EV_ERROR:
+            print os.strerror(event.data)
+            continue
+        proc_index = descriptors.index(event.ident)
+        proc = procs[proc_index]
+        if (event.flags & select.KQ_FILTER_READ) and (event.data > 0):
+            print '=' * 80
+            print 'PROCESS %s (read %d bytes)' % (proc.pid, event.data)
+            print '-' * 80
+            print os.read(event.ident, event.data)
+            print '=' * 80
+        if event.flags & select.KQ_EV_EOF:
+            print "Closing descriptor!"
+            proc.stdout.close()
+        events.extend(kqueue.control(None, 10))
+
+
 
 else:
     poll = select.poll()
