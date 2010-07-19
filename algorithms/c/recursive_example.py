@@ -1,18 +1,3 @@
-##int solve(int m, int *Y, int n, int *R) {
-##    if(m == 0) return 1;
-##    if(n == 0) return 0;
-##
-##    R[0] = 0;
-##    if(solve(m, Y+1, n-1, R+1)) {
-##        return 1;
-##    } else {
-##        R[0] = 1;
-##        return solve(m-Y[0], Y+1, n-1, R+1);
-##    }
-##}
-
-import itertools as it
-
 def solve(m, Y, R, i):
     #print m, Y, R
     if m == 0:
