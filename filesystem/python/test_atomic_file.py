@@ -25,6 +25,16 @@ class TestAtomicFile(unittest.TestCase):
         self.assert_(path.exists(self.name))
         self.assert_(not path.exists(path.join(self.directory,
                                            af.tempfile.name)))
+    def testClose(self):
+        af = atomic_file.AtomicFile(name=self.name, dir=self.directory)
+        self.assert_(not path.exists(self.name))
+        self.assert_(path.exists(path.join(self.directory,
+                                           af.tempfile.name)))
+        af.close()
+        self.assert_(path.exists(self.name))
+        self.assert_(not path.exists(path.join(self.directory,
+                                           af.tempfile.name)))
+
     def testContext(self):
         with atomic_file.AtomicFile(name=self.name, dir=self.directory) as af:
             self.assert_(not path.exists(self.name))
@@ -54,4 +64,6 @@ class TestAtomicFile(unittest.TestCase):
                                                af.tempfile.name)))
     def testBoom(self):
         self.assertRaises(RuntimeError, self.hasExplosion)
+
+
 
