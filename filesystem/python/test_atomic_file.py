@@ -21,26 +21,10 @@ class TestAtomicFile(unittest.TestCase):
         self.assert_(not path.exists(self.name))
         self.assert_(path.exists(path.join(self.directory,
                                            af.tempfile.name)))
-        af._swap()
+        af.swap()
         self.assert_(path.exists(self.name))
         self.assert_(not path.exists(path.join(self.directory,
                                            af.tempfile.name)))
-
-    def testWrite(self):
-        af = atomic_file.AtomicFile(name=self.name, dir=self.directory)
-        text = 'THE TEXT\n'
-        af.write(text)
-        af._swap()
-        self.assertEqual(file(self.name).read(), text)
-
-    def testMoreWrite(self):
-        af = atomic_file.AtomicFile(name=self.name, dir=self.directory)
-        lines = ['THE TEXT', 'MORE TEXT', 'AGAIN!']
-        for line in lines:
-            print >> af, line
-        af._swap()
-        self.assertEqual(file(self.name).read(), '\n'.join(lines) + '\n')
-
     def testContext(self):
         with atomic_file.AtomicFile(name=self.name, dir=self.directory) as af:
             self.assert_(not path.exists(self.name))
@@ -48,3 +32,18 @@ class TestAtomicFile(unittest.TestCase):
         self.assert_(path.exists(self.name))
         self.assert_(not path.exists(path.join(self.directory,
                                            af.tempfile.name)))
+
+    def testWrite(self):
+        with atomic_file.AtomicFile(name=self.name, dir=self.directory) as af:
+            text = 'THE TEXT\n'
+            af.write(text)
+        self.assertEqual(file(self.name).read(), text)
+
+    def testMoreWrite(self):
+        with atomic_file.AtomicFile(name=self.name, dir=self.directory) as af:
+            lines = ['THE TEXT', 'MORE TEXT', 'AGAIN!']
+            for line in lines:
+                print >> af, line
+        self.assertEqual(file(self.name).read(), '\n'.join(lines) + '\n')
+
+
