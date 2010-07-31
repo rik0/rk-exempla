@@ -23,7 +23,7 @@ class AtomicFile(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._swap()
+        self.swap()
         return False
 
     def swap(self):
