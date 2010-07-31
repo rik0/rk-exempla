@@ -3,6 +3,8 @@ import tempfile
 import atomic_file
 
 import os
+import time
+
 from os import path
 
 class TestAtomicFile(unittest.TestCase):
@@ -65,5 +67,25 @@ class TestAtomicFile(unittest.TestCase):
     def testBoom(self):
         self.assertRaises(RuntimeError, self.hasExplosion)
 
+    def testDifferentDirectory(self):
+        tmpdir = tempfile.gettempdir()
+        af = atomic_file.AtomicFile(name=self.name, dir=tmpdir)
+        self.assert_(not path.exists(self.name))
+        self.assert_(path.exists(path.join(tmpdir,
+                                           af.tempfile.name)))
+        af.swap()
+        self.assert_(path.exists(self.name))
+        self.assert_(not path.exists(path.join(tmpdir,
+                                           af.tempfile.name)))
 
+    def testDifferentDirectory2(self):
+        self.name = path.join('..', 'here' + str(time.time))
+        af = atomic_file.AtomicFile(name=self.name, dir=self.directory)
+        self.assert_(not path.exists(self.name))
+        self.assert_(path.exists(path.join(self.directory,
+                                           af.tempfile.name)))
+        af.swap()
+        self.assert_(path.exists(self.name))
+        self.assert_(not path.exists(path.join(self.directory,
+                                           af.tempfile.name)))
 
