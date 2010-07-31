@@ -15,7 +15,22 @@ class AtomicFile(object):
             mode=mode, bufsize=-1, suffix=suffix, prefix=prefix,
             dir=dir, delete=False)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._swap()
+        return False
+
+
     def _swap(self):
         self.tempfile.close()
         os.rename(self.tempfile.name, self.name)
+
+
+
+    def write(self, what):
+        'Writes a string to the file'
+        self.tempfile.write(what)
+
 
