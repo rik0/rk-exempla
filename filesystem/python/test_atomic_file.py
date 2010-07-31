@@ -46,4 +46,12 @@ class TestAtomicFile(unittest.TestCase):
                 print >> af, line
         self.assertEqual(file(self.name).read(), '\n'.join(lines) + '\n')
 
+    def hasExplosion(self):
+        with atomic_file.AtomicFile(name=self.name, dir=self.directory) as af:
+            raise RuntimeError()
+        self.assert_(not path.exists(self.name))
+        self.assert_(not path.exists(path.join(self.directory,
+                                               af.tempfile.name)))
+    def testBoom(self):
+        self.assertRaises(RuntimeError, self.hasExplosion)
 
