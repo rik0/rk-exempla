@@ -85,11 +85,11 @@ int solve(int m, int *Y, int n, int *R) {
     if(m == 0) return 1;
     if(n == 0) return 0;
 
-    *R = !*R;
+    *R = 1; // !*R;
     if(solve(m-*Y, Y+1, n-1, R+1)) {
         return 1;
     } else {
-        *R = !*R;
+        *R = 0; //!*R;
         return solve(m, Y+1, n-1, R+1);
     }
 }
