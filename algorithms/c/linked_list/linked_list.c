@@ -4,6 +4,7 @@
  */
 
 #include "util.h"
+#include "chunk.h"
 #include "linked_list.h"
 
 #include <stdlib.h>
@@ -40,7 +41,21 @@ rk_dllist_node_init(struct rk_dllist_node* node,
                         void* value, size_t sz,
                         struct rk_dllist_node* prev,
                         struct rk_dllist_node* next) {
-    memcpy(node->value, value, sz);
+
     node->prev = prev;
     node->next = next;
+}
+
+
+void rk_dllist_init(rk_dllist lst) {
+    lst->first = lst->last = NULL;
+}
+
+bool rk_dllist_is_empty(rk_dllist lst) {
+    assert(lst->last == NULL);
+    return lst->first == NULL;
+}
+
+void rk_dllist_destroy(rk_dllist lst) {
+    while(rk_dllist_pop_front(lst));
 }

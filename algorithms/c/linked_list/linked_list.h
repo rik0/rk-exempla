@@ -11,8 +11,7 @@
 struct rk_dllist_node {
     struct rk_dllist_node* prev;
     struct rk_dllist_node* next;
-    size_t size;
-    char value[];
+    rk_chunk chunk;
 };
 
 struct rk_dllist_handle {
@@ -24,7 +23,7 @@ typedef struct rk_dllist_handle rk_dllist[1];
 typedef struct rk_dllist_node rk_dllist_iterator[1];
 
 void rk_dllist_init(rk_dllist lst);
-bool rk_dllist_empty(rk_dllist lst);
+bool rk_dllist_is_empty(rk_dllist lst);
 void rk_dllist_destroy(rk_dllist lst);
 
 
@@ -33,10 +32,9 @@ struct rk_dllist_node* rk_dllist_push_front(rk_dllist lst,
 struct rk_dllist_node* rk_dllist_push_back(rk_dllist lst,
                                         void* value, size_t size);
 
-void* rk_dllist_pop_front(rk_dllist lst, size_t* size);
-void* rk_dllist_pop_back(rk_dllist lst, size_t* size);
-void* rk_dllist_pop_front_ns(rk_dllist lst);
-void* rk_dllist_pop_back_ns(rk_dllist lst);
+
+bool rk_dllist_pop_front(rk_dllist lst);
+bool rk_dllist_pop_back(rk_dllist lst);
 
 void* rk_dllist_peek_front(rk_dllist lst, size_t* size);
 void* rk_dllist_peek_back(rk_dllist lst, size_t* size);
@@ -57,5 +55,7 @@ struct rk_dllist_node* rk_dllist_insert_before(rk_dllist_iterator it,
 struct rk_dllist_node* rk_dllist_insert_after(rk_dllist_iterator it,
                                             void* value, size_t size);
 
+bool rk_dllist_remove_before(rk_dllist_iterator it);
+bool rk_dllist_remove_after(rk_dllist_iterator it);
 
 #endif
