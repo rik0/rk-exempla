@@ -6,12 +6,6 @@
 #ifndef RK_LINKED_LIST_H
 #define RK_LINKED_LIST_H
 
-#if __STDC_VERSION__ >= 199901L
-  /* "inline" is a keyword */
-#else
-# define bool int
-#endif
-
 #include <stdlib.h>
 
 struct rk_dllist_node {
