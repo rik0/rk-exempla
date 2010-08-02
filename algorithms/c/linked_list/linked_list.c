@@ -9,11 +9,8 @@
 #include <string.h>
 #include <assert.h>
 
-struct rk_dllist_node {
-    struct rk_dllist_node* prev;
-    struct rk_dllist_node* next;
-    char value[];
-};
+
+
 
 struct rk_dllist_node*
 rk_dllist_node_alloc(struct rk_dllist_node** node, size_t sz) {
@@ -27,14 +24,14 @@ rk_dllist_node_alloc(struct rk_dllist_node** node, size_t sz) {
 
 struct rk_dllist_node*
 rk_dllist_push(void* value, size_t size, rk_dllist tail) {
-    struct rk_dllist_node* new_node;
-    assert(tail != NULL);
-    assert(tail->next == NULL);
-    if(rk_dllist_node_alloc(&new_node, size)) {
-        rk_dllist_node_init(new_node, value, size, tail, NULL);
-        return (tail->next = new_node);
-    }
-    return 0;
+//     struct rk_dllist_node* new_node;
+//     assert(tail != NULL);
+//     assert(tail->next == NULL);
+//     if(rk_dllist_node_alloc(&new_node, size)) {
+//         rk_dllist_node_init(new_node, value, size, tail, NULL);
+//         return (tail->next = new_node);
+//     }
+//     return 0;
 }
 
 void

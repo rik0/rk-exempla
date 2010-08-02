@@ -89,3 +89,13 @@ class TestAtomicFile(unittest.TestCase):
         self.assert_(not path.exists(path.join(self.directory,
                                            af.tempfile.name)))
 
+    def testAppend(self):
+        lines = ['line1', 'line2', 'line3']
+        open(self.name, 'w').write(lines[0])
+        with atomic_file.AtomicFile(self.name, mode='a', dir=self.directory) as af:
+            for line in lines[1:]:
+                af.write(line + '\n')
+        self.assertEqual(open(self.name).read(),
+                         '\n'.join(lines) + '\n')
+
+
