@@ -9,7 +9,6 @@
 #if __STDC_VERSION__ >= 199901L
   /* "inline" is a keyword */
 #else
-# define inline static
 # define bool int
 #endif
 
