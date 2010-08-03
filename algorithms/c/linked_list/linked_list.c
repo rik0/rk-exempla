@@ -11,6 +11,13 @@
 #include <assert.h>
 
 
+struct rk_dllist_node {
+    struct rk_dllist_node* prev;
+    struct rk_dllist_node* next;
+    size_t size;
+    unsigned char value[];
+};
+
 static struct rk_dllist_node*
 rk_dllist_node_alloc(size_t sz) {
     struct rk_dllist_node* tmp = malloc(sizeof(struct rk_dllist_node) + sz);
@@ -211,4 +218,30 @@ rk_dllist_peek_front(rk_dllist lst, void* buff, size_t max_size) {
         return RK_EBUFFER;
     }
     return rk_dllist_peek_first_notsafe(lst, buff);
+}
+
+void rk_dllist_iterator_init(rk_dllist_iterator* it, rk_dllist lst) {
+    *it = lst->first;
+}
+
+bool rk_dllist_iterator_has_next(rk_dllist_iterator it) {
+    assert(it);
+    return (intptr_t)it->next;
+}
+
+bool rk_dllist_iterator_has_prev(rk_dllist_iterator it) {
+    assert(it);
+    return (intptr_t)it->prev;
+}
+
+bool rk_dllist_iterator_inc(rk_dllist_iterator* it) {
+    assert(it);
+    assert(rk_dllist_iterator_has_next(*it));
+    return (intptr_t)(*it = (*it)->next);
+}
+
+bool rk_dllist_iterator_dec(rk_dllist_iterator* it) {
+    assert(it);
+    assert(rk_dllist_iterator_has_prev(*it));
+    return (intptr_t)(*it = (*it)->prev);
 }
