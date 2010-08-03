@@ -97,23 +97,6 @@ rk_dllist_node_copy(struct rk_dllist_node* ch) {
 }
 
 
-
-
-
-struct rk_dllist_node*
-rk_dllist_push(void* value, size_t size, rk_dllist tail) {
-//     struct rk_dllist_node* new_node;
-//     assert(tail != NULL);
-//     assert(tail->next == NULL);
-//     if(rk_dllist_node_alloc(&new_node, size)) {
-//         rk_dllist_node_init(new_node, value, size, tail, NULL);
-//         return (tail->next = new_node);
-//     }
-//     return 0;
-}
-
-
-
 void rk_dllist_init(rk_dllist lst) {
     lst->first = lst->last = NULL;
 }
@@ -269,4 +252,22 @@ rk_dllist_iterator_current_value_notsafe(rk_dllist_iterator it,
     assert(it);
     rk_dllist_node_get(buffer, it);
     return RK_OK;
+}
+
+struct rk_dllist_node*
+rk_dllist_insert_before(rk_dllist_iterator it, void* value, size_t size) {
+    struct rk_dllist_node* new_node = rk_dllist_node_new(value, size);
+    if(new_node) {
+        rk_dllist_node_link(new_node, it->prev, it);
+    }
+    return new_node;
+}
+
+struct rk_dllist_node*
+rk_dllist_insert_after(rk_dllist_iterator it, void* value, size_t size) {
+    struct rk_dllist_node* new_node = rk_dllist_node_new(value, size);
+    if(new_node) {
+        rk_dllist_node_link(new_node, it, it->next);
+    }
+    return new_node;
 }
