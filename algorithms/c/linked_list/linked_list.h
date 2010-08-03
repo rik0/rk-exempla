@@ -60,7 +60,7 @@ struct rk_dllist_node* rk_dllist_insert_before(rk_dllist_iterator it,
 struct rk_dllist_node* rk_dllist_insert_after(rk_dllist_iterator it,
                                             void* value, size_t size);
 
-bool rk_dllist_remove_before(rk_dllist_iterator it);
-bool rk_dllist_remove_after(rk_dllist_iterator it);
+rk_dllist_error_status rk_dllist_remove_before(rk_dllist_iterator it);
+rk_dllist_error_status rk_dllist_remove_after(rk_dllist_iterator it);
 
 #endif

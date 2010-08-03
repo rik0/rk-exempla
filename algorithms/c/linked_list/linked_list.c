@@ -273,3 +273,25 @@ rk_dllist_insert_after(rk_dllist_iterator it, void* value, size_t size) {
     }
     return new_node;
 }
+
+rk_dllist_error_status rk_dllist_remove_before(rk_dllist_iterator it) {
+    if(rk_dllist_iterator_has_prev(it)) {
+        struct rk_dllist_node* delendo = it->prev;
+        rk_dllist_node_link_prev(it, it->prev->prev);
+        rk_dllist_node_free(delendo);
+        return RK_OK;
+    } else {
+        return RK_EEMPTY;
+    }
+}
+
+rk_dllist_error_status rk_dllist_remove_after(rk_dllist_iterator it) {
+    if(rk_dllist_iterator_has_prev(it)) {
+        struct rk_dllist_node* delendo = it->next;
+        rk_dllist_node_link_next(it, it->next->next);
+        rk_dllist_node_free(delendo);
+        return RK_OK;
+    } else {
+        return RK_EEMPTY;
+    }
+}
