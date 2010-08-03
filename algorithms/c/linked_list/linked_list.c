@@ -130,7 +130,7 @@ rk_dllist_push_back(rk_dllist lst, void* value, size_t size) {
     return new_node;
 }
 
-peek_status rk_dllist_pop_front(rk_dllist lst) {
+rk_dllist_error_status rk_dllist_pop_front(rk_dllist lst) {
     if(lst->first) {
         struct rk_dllist_node* delendo = lst->first;
         delendo->next->prev = NULL;
@@ -141,7 +141,7 @@ peek_status rk_dllist_pop_front(rk_dllist lst) {
     return RK_EEMPTY;
 }
 
-peek_status rk_dllist_pop_back(rk_dllist lst) {
+rk_dllist_error_status rk_dllist_pop_back(rk_dllist lst) {
     if(lst->last) {
         struct rk_dllist_node* delendo = lst->last;
         delendo->prev->next = NULL;
@@ -152,7 +152,7 @@ peek_status rk_dllist_pop_back(rk_dllist lst) {
     return RK_EEMPTY;
 }
 
-peek_status rk_dllist_peek_front_size(rk_dllist lst, size_t* size) {
+rk_dllist_error_status rk_dllist_peek_front_size(rk_dllist lst, size_t* size) {
     if(rk_dllist_empty(lst)) {
         return RK_EEMPTY;
     }
@@ -160,7 +160,7 @@ peek_status rk_dllist_peek_front_size(rk_dllist lst, size_t* size) {
     return RK_OK;
 }
 
-peek_status rk_dllist_peek_back_size(rk_dllist lst, size_t* size) {
+rk_dllist_error_status rk_dllist_peek_back_size(rk_dllist lst, size_t* size) {
     if(rk_dllist_empty(lst)) {
         return RK_EEMPTY;
     }
@@ -168,7 +168,7 @@ peek_status rk_dllist_peek_back_size(rk_dllist lst, size_t* size) {
     return RK_OK;
 }
 
-peek_status
+rk_dllist_error_status
 rk_dllist_peek_front_notsafe(rk_dllist lst, void* buff) {
     if(rk_dllist_empty(lst)) {
         return RK_EEMPTY;
@@ -177,7 +177,7 @@ rk_dllist_peek_front_notsafe(rk_dllist lst, void* buff) {
     return RK_OK;
 }
 
-peek_status
+rk_dllist_error_status
 rk_dllist_peek_back_notsafe(rk_dllist lst, void* buff) {
     if(rk_dllist_empty(lst)) {
         return RK_EEMPTY;
@@ -187,7 +187,7 @@ rk_dllist_peek_back_notsafe(rk_dllist lst, void* buff) {
 }
 
 
-peek_status
+rk_dllist_error_status
 rk_dllist_peek_back(rk_dllist lst, void* buff, size_t max_size) {
     if(max_size < lst->last->size) {
         return RK_EBUFFER;
@@ -195,7 +195,7 @@ rk_dllist_peek_back(rk_dllist lst, void* buff, size_t max_size) {
     return rk_dllist_peek_back_notsafe(lst, buff);
 }
 
-peek_status
+rk_dllist_error_status
 rk_dllist_peek_front(rk_dllist lst, void* buff, size_t max_size) {
     if(max_size < lst->first->size) {
         return RK_EBUFFER;
@@ -217,26 +217,28 @@ bool rk_dllist_iterator_has_prev(rk_dllist_iterator it) {
     return (intptr_t)it->prev;
 }
 
-bool rk_dllist_iterator_inc(rk_dllist_iterator* it) {
+rk_dllist_error_status
+rk_dllist_iterator_inc(rk_dllist_iterator* it) {
     assert(it);
     assert(rk_dllist_iterator_has_next(*it));
-    return (intptr_t)(*it = (*it)->next);
+    return (*it = (*it)->next) ? RK_OK : RK_EEMPTY;
 }
 
-bool rk_dllist_iterator_dec(rk_dllist_iterator* it) {
+rk_dllist_error_status
+rk_dllist_iterator_dec(rk_dllist_iterator* it) {
     assert(it);
     assert(rk_dllist_iterator_has_prev(*it));
-    return (intptr_t)(*it = (*it)->prev);
+    return (*it = (*it)->next) ? RK_OK : RK_EEMPTY;
 }
 
-peek_status
+rk_dllist_error_status
 rk_dllist_iterator_current_size(rk_dllist_iterator it, size_t* size) {
     assert(it);
     *size = it->size;
     return RK_OK;
 }
 
-peek_status
+rk_dllist_error_status
 rk_dllist_iterator_current_value(rk_dllist_iterator it, void* buffer,
                                  size_t max_size) {
     assert(it);
@@ -246,7 +248,7 @@ rk_dllist_iterator_current_value(rk_dllist_iterator it, void* buffer,
     return rk_dllist_iterator_current_value_notsafe(it, buffer);
 }
 
-peek_status
+rk_dllist_error_status
 rk_dllist_iterator_current_value_notsafe(rk_dllist_iterator it,
                                          void* buffer) {
     assert(it);
