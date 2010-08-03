@@ -245,3 +245,28 @@ bool rk_dllist_iterator_dec(rk_dllist_iterator* it) {
     assert(rk_dllist_iterator_has_prev(*it));
     return (intptr_t)(*it = (*it)->prev);
 }
+
+peek_status
+rk_dllist_iterator_current_size(rk_dllist_iterator it, size_t* size) {
+    assert(it);
+    *size = it->size;
+    return RK_OK;
+}
+
+peek_status
+rk_dllist_iterator_current_value(rk_dllist_iterator it, void* buffer,
+                                 size_t max_size) {
+    assert(it);
+    if(max_size < it->size) {
+        return RK_EBUFFER;
+    }
+    return rk_dllist_iterator_current_value_notsafe(it, buffer);
+}
+
+peek_status
+rk_dllist_iterator_current_value_notsafe(rk_dllist_iterator it,
+                                         void* buffer) {
+    assert(it);
+    rk_dllist_node_get(buffer, it);
+    return RK_OK;
+}

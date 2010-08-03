@@ -51,8 +51,9 @@ bool rk_dllist_iterator_has_prev(rk_dllist_iterator it);
 bool rk_dllist_iterator_inc(rk_dllist_iterator* it);
 bool rk_dllist_iterator_dec(rk_dllist_iterator* it);
 
-void* rk_dllist_iterator_deref(rk_dllist_iterator it, size_t* size);
-void* rk_dllist_iterator_deref_ns(rk_dllist_iterator it);
+peek_status rk_dllist_iterator_current_size(rk_dllist_iterator it, size_t* size);
+peek_status rk_dllist_iterator_current_value(rk_dllist_iterator it, void* buffer, size_t max_size);
+peek_status rk_dllist_iterator_current_value_notsafe(rk_dllist_iterator it, void* buffer);
 
 struct rk_dllist_node* rk_dllist_insert_before(rk_dllist_iterator it,
                                             void* value, size_t size);
