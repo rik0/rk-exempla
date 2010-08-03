@@ -63,4 +63,22 @@ struct rk_dllist_node* rk_dllist_insert_after(rk_dllist_iterator it,
 rk_dllist_error_status rk_dllist_remove_before(rk_dllist_iterator it);
 rk_dllist_error_status rk_dllist_remove_after(rk_dllist_iterator it);
 
+
+#define DEFINE_TYPED_DLLIST(type)                                            \
+    inline rk_dllist_error_status                                            \
+    rk_dllist_peek_front_##type(rk_dllist lst, type* buff) {                 \
+        return rk_dllist_peek_front_notsafe(lst, buff);                      \
+    }                                                                        \
+    inline rk_dllist_error_status                                            \
+    rk_dllist_peek_back_##type(rk_dllist lst, type* buff) {                  \
+        return rk_dllist_peek_back_notsafe(lst, buff);                       \
+    }                                                                        \
+    inline rk_dllist_error_status                                            \
+    rk_dllist_iterator_current_##type(rk_dllist_iterator it, type* buff) {   \
+        return rk_dllist_iterator_current_value_notsafe(it, buff);           \
+    }                                                                        \
+
+
+DEFINE_TYPED_DLLIST(int)
+
 #endif
