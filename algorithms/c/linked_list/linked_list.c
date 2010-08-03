@@ -110,7 +110,7 @@ void rk_dllist_destroy(rk_dllist lst) {
     while(rk_dllist_pop_front(lst));
 }
 
-struct rk_dllist_node*
+rk_dllist_iterator
 rk_dllist_push_front(rk_dllist lst, void* value, size_t size) {
     struct rk_dllist_node* new_node = rk_dllist_node_new(value, size);
     if(new_node) {
@@ -120,7 +120,7 @@ rk_dllist_push_front(rk_dllist lst, void* value, size_t size) {
     return new_node;
 }
 
-struct rk_dllist_node*
+rk_dllist_iterator
 rk_dllist_push_back(rk_dllist lst, void* value, size_t size) {
     struct rk_dllist_node* new_node = rk_dllist_node_new(value, size);
     if(new_node) {
@@ -256,7 +256,7 @@ rk_dllist_iterator_current_value_notsafe(rk_dllist_iterator it,
     return RK_OK;
 }
 
-struct rk_dllist_node*
+rk_dllist_iterator
 rk_dllist_insert_before(rk_dllist_iterator it, void* value, size_t size) {
     struct rk_dllist_node* new_node = rk_dllist_node_new(value, size);
     if(new_node) {
@@ -265,7 +265,7 @@ rk_dllist_insert_before(rk_dllist_iterator it, void* value, size_t size) {
     return new_node;
 }
 
-struct rk_dllist_node*
+rk_dllist_iterator
 rk_dllist_insert_after(rk_dllist_iterator it, void* value, size_t size) {
     struct rk_dllist_node* new_node = rk_dllist_node_new(value, size);
     if(new_node) {
