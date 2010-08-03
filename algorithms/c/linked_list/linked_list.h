@@ -11,7 +11,8 @@
 struct rk_dllist_node {
     struct rk_dllist_node* prev;
     struct rk_dllist_node* next;
-    rk_chunk chunk;
+    size_t size;
+    unsigned char value[];
 };
 
 struct rk_dllist_handle {
@@ -33,13 +34,21 @@ struct rk_dllist_node* rk_dllist_push_back(rk_dllist lst,
                                         void* value, size_t size);
 
 
-bool rk_dllist_pop_front(rk_dllist lst);
-bool rk_dllist_pop_back(rk_dllist lst);
+typedef enum {
+    RK_OK = 0, RK_EEMPTY, RK_EBUFFER
+} peek_status;
 
-void* rk_dllist_peek_front(rk_dllist lst, size_t* size);
-void* rk_dllist_peek_back(rk_dllist lst, size_t* size);
-void* rk_dllist_peek_front_ns(rk_dllist lst);
-void* rk_dllist_peek_back_ns(rk_dllist lst);
+peek_status rk_dllist_pop_front(rk_dllist lst);
+peek_status rk_dllist_pop_back(rk_dllist lst);
+
+peek_status rk_dllist_peek_front_size(rk_dllist lst, size_t* size);
+peek_status rk_dllist_peek_back_size(rk_dllist lst,  size_t* size);
+
+peek_status rk_dllist_peek_front(rk_dllist lst, void* buff, size_t max_size);
+peek_status rk_dllist_peek_back(rk_dllist lst, void* buff, size_t max_size);
+
+peek_status rk_dllist_peek_front_notsafe(rk_dllist lst, void* buff);
+peek_status rk_dllist_peek_back_notsafe(rk_dllist lst, void* buff);
 
 void rk_dllist_iterator_init(rk_dllist_iterator it, rk_dllist lst);
 bool rk_dllist_iterator_has_next(rk_dllist_iterator it);
