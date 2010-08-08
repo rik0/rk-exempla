@@ -63,6 +63,14 @@ rk_dllist_error_status rk_dllist_remove_after(rk_dllist_iterator it);
 
 
 #define DEFINE_TYPED_DLLIST(type)                                            \
+    inline rk_dllist_iterator                                                \
+    rk_dllist_push_front_##type(rk_dllist lst, type value) {                 \
+        return rk_dllist_push_front(lst, &value, sizeof(value));             \
+    }                                                                        \
+    inline rk_dllist_iterator                                                \
+    rk_dllist_push_back_##type(rk_dllist lst, type value) {                  \
+        return rk_dllist_push_back(lst, &value, sizeof(value));              \
+    }                                                                        \
     inline rk_dllist_error_status                                            \
     rk_dllist_peek_front_##type(rk_dllist lst, type* buff) {                 \
         return rk_dllist_peek_front_notsafe(lst, buff);                      \
@@ -74,6 +82,14 @@ rk_dllist_error_status rk_dllist_remove_after(rk_dllist_iterator it);
     inline rk_dllist_error_status                                            \
     rk_dllist_iterator_current_##type(rk_dllist_iterator it, type* buff) {   \
         return rk_dllist_iterator_current_value_notsafe(it, buff);           \
+    }                                                                        \
+    inline rk_dllist_iterator                                                \
+    rk_dllist_insert_before_##type(rk_dllist_iterator it, type value) {      \
+        return rk_dllist_insert_before(it, &value, sizeof(value));           \
+    }                                                                        \
+    inline rk_dllist_iterator                                                \
+    rk_dllist_insert_after_##type(rk_dllist_iterator it, type value) {       \
+        return rk_dllist_insert_after(it, &value, sizeof(value));            \
     }                                                                        \
 
 
