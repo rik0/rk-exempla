@@ -39,7 +39,7 @@
        (let* ([ret (simplify-by-weight-a (caar weights) (cadar weights) n digits)]
               [n (car ret)]
               [digits (cdr ret)])
-         (simplify-all (cdr weights) n digits))))))
+         (simplify-all-a (cdr weights) n digits))))))
 
 ;; Uses simplify-by-weight-b, which
 ;; Uses a standard recursive call
@@ -51,7 +51,7 @@
        (let* ([ret (simplify-by-weight-b (caar weights) (cadar weights) n digits)]
               [n (car ret)]
               [digits (cdr ret)])
-         (simplify-all (cdr weights) n digits))))))
+         (simplify-all-b (cdr weights) n digits))))))
 
 ;; Embeds simplify-by-weight-a as a subprocedure
 (define simplify-all-c
@@ -67,7 +67,7 @@
                             (loop (- n weight) (cons ch digits)))))]
               [n (car ret)]
               [digits (cdr ret)])
-         (simplify-all (cdr weights) n digits))))))
+         (simplify-all-c (cdr weights) n digits))))))
 
 ;; Imperative procedure: uses state-change. 
 ;; Uses for-each.
@@ -131,22 +131,20 @@
             (set! digits (cons ch digits)))))
     digits))
 
-
-(define integer->roman-nolet
-  ((lambda (weights)
-     (lambda (n)
-       (let-values ([(thousands n) (quotient/remainder n 1000)])
-         (foldl string-append ""
-           (simplify-all weights n(build-list thousands (lambda (_) "M")))))))
-   (sort '((1 "I") (4 "IV") (5 "V") (9 "IX") (10 "X")
-                   (40 "XL") (50 "L") (90 "XC") (100 "C")
-                   (400 "CD") (500 "D") (900 "CM"))
-         >
-         #:key car)))
+;(define integer->roman-nolet
+;  ((lambda (weights)
+;     (lambda (n)
+;       (let-values ([(thousands n) (quotient/remainder n 1000)])
+;         (foldl string-append ""
+;           (simplify-all weights n(build-list thousands (lambda (_) "M")))))))
+;   (sort '((1 "I") (4 "IV") (5 "V") (9 "IX") (10 "X")
+;                   (40 "XL") (50 "L") (90 "XC") (100 "C")
+;                   (400 "CD") (500 "D") (900 "CM"))
+;         >
+;         #:key car)))
            
 
-
-(define integer->roman
+(define (integer->roman-builder simplify-all)
   (let ([weights (sort '((1 "I") (4 "IV") (5 "V") (9 "IX") (10 "X")
                                  (40 "XL") (50 "L") (90 "XC") (100 "C")
                                  (400 "CD") (500 "D") (900 "CM"))
@@ -156,7 +154,24 @@
       (let-values ([(thousands n) (quotient/remainder n 1000)])
         (foldl string-append ""
                (simplify-all weights n
-                             (build-list thousands (lambda (_) "M")))))))
-  )
+                             (build-list thousands (lambda (_) "M"))))))))
            
      
+
+(define simplify-all-versions 
+  (list simplify-all-a simplify-all-b simplify-all-c
+                   simplify-all-d simplify-all-e
+                   simplify-all-f simplify-all-g))
+
+(define (benchmark how-many)
+  (for ([simplify-all simplify-all-versions])
+    (let* ([integer->roman (integer->roman-builder simplify-all)]
+          [times (build-list how-many values)]
+          [numbers (build-list 2000 add1)])
+      (let-values ([(results execution-time real-time gc-time)
+                    (time-apply map
+                                (list (lambda (n) (for-each (lambda (i) (integer->roman n)) times))
+                                      numbers))])
+        (printf "~a: ~a~n" simplify-all execution-time)))))
+      
+(benchmark 200)
