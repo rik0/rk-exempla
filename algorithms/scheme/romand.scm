@@ -155,7 +155,7 @@
               [ch (cadr weight-pair)])
          (let simplify-again ()
            (cond
-             ((< n weight) null)
+             ((< n weight) #f)
              (else
               (set! n (- n weight))
               (set! digits (cons ch digits))
@@ -239,15 +239,17 @@
                    simplify-all-d simplify-all-e))
 
 (define (benchmark how-many)
-  (for ([simplify-all simplify-all-versions])
-    (let* ([integer->roman (integer->roman-builder simplify-all)]
+  (for-each
+    (lambda (simplify-all)
+      (let* ([integer->roman (integer->roman-builder simplify-all)]
           [times (build-list how-many values)]
           [numbers (build-list 2000 add1)])
       (time (map (lambda (n)
                    (for-each
                      (lambda (i) (integer->roman n))
                      times))
-              numbers)))))
+              numbers))))
+    simplify-all-versions))
 
       
-(benchmark 200)
+(benchmark 1)
