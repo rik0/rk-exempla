@@ -1,12 +1,12 @@
-(define-syntax while
-  (syntax-rules ()
-    [(_ c b1 b2 ...)
-     (let loop ()
-       (when c b1 b2 ... (loop)))]))
+;; (define-syntax while
+;;   (syntax-rules ()
+;;     [(_ c b1 b2 ...)
+;;      (let loop ()
+;;        (when c b1 b2 ... (loop)))]))
 
-(define-syntax until
-  (syntax-rules ()
-    [(_ c b1 b2 ...) (while (not c) b1 b2 ...)]))
+;; (define-syntax until
+;;   (syntax-rules ()
+;;     [(_ c b1 b2 ...) (while (not c) b1 b2 ...)]))
 
 (define-syntax when
   (syntax-rules ()
@@ -18,15 +18,15 @@
     [(_ c b1 ...)
      (cond (c #f) (else b1 ...))]))
 
-(define-syntax for
-  (syntax-rules ()
-    [(_ ([var1 list1] [var2 list2] ...) body)
-     (unless (null? list1)
-       (let loop ([var1 (car list1)] [ list1 (cdr list1)])
-         (for ([var2 list2] ...) body)
-         (unless (null? list1)
-           (loop (car list1) (cdr list1)))))]
-    [(_ () body) body]))
+;; (define-syntax for
+;;   (syntax-rules ()
+;;     [(_ ([var1 list1] [var2 list2] ...) body)
+;;      (unless (null? list1)
+;;        (let loop ([var1 (car list1)] [ list1 (cdr list1)])
+;;          (for ([var2 list2] ...) body)
+;;          (unless (null? list1)
+;;            (loop (car list1) (cdr list1)))))]
+;;     [(_ () body) body]))
 
 (define (sort sequence less?)
 ;;  (declare (standard-bindings) (not safe))
@@ -183,29 +183,29 @@
                   
 ;; Another imperative version
 ;; Uses non standard for
-(define simplify-all-f
-  (lambda (weights n digits)
-    (for ([weight-pair weights])
-      (let  ([weight (car weight-pair)]
-             [ch (cadr weight-pair)])
-        (let simplify-again ()
-          (unless (< n weight)
-            (set! n (- n weight))
-            (set! digits (cons ch digits))
-            (simplify-again)))))
-    digits))
+;; (define simplify-all-f
+;;   (lambda (weights n digits)
+;;     (for ([weight-pair weights])
+;;       (let  ([weight (car weight-pair)]
+;;              [ch (cadr weight-pair)])
+;;         (let simplify-again ()
+;;           (unless (< n weight)
+;;             (set! n (- n weight))
+;;             (set! digits (cons ch digits))
+;;             (simplify-again)))))
+;;     digits))
 
 ;; Another imperative version
 ;; Uses user defined macros and for
-(define simplify-all-g
-  (lambda (weights n digits)
-    (for ([weight-pair weights])
-      (let  ([weight (car weight-pair)]
-             [ch (cadr weight-pair)])
-        (until  (< n weight)
-            (set! n (- n weight))
-            (set! digits (cons ch digits)))))
-    digits))
+;; (define simplify-all-g
+;;   (lambda (weights n digits)
+;;     (for ([weight-pair weights])
+;;       (let  ([weight (car weight-pair)]
+;;              [ch (cadr weight-pair)])
+;;         (until  (< n weight)
+;;             (set! n (- n weight))
+;;             (set! digits (cons ch digits)))))
+;;     digits))
 
 ;(define integer->roman-nolet
 ;  ((lambda (weights)
@@ -236,8 +236,7 @@
 
 (define simplify-all-versions 
   (list simplify-all-a simplify-all-b simplify-all-c
-                   simplify-all-d simplify-all-e
-                   simplify-all-f simplify-all-g))
+                   simplify-all-d simplify-all-e))
 
 (define (benchmark how-many)
   (for ([simplify-all simplify-all-versions])
@@ -251,4 +250,4 @@
               numbers)))))
 
       
-;(benchmark 200)
+(benchmark 200)
