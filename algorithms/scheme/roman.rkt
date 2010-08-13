@@ -1,7 +1,7 @@
 #lang racket
 
 (define-syntax while
-  (syntax-rules (loop)
+  (syntax-rules ()
     [(_ c b1 b2 ...)
      (let loop ()
        (when c b1 b2 ... (loop)))]))
