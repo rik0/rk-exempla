@@ -1,3 +1,6 @@
+
+;; Copyright (c) 2010 by Enrico Franchi
+
 (define-syntax when
   (syntax-rules ()
     [(_ c b1 ...)
@@ -8,6 +11,8 @@
     [(_ c b1 ...)
      (cond (c #f) (else b1 ...))]))
 
+;;; function sort from file "Sort.scm", Time-stamp: <2008-03-18 15:21:35 feeley>
+;;; Copyright (c) 2006-2008 by Marc Feeley, All Rights Reserved.
 (define (sort sequence less?)
   (define (sort-list lst less?)
     
@@ -46,6 +51,9 @@
          (list->vector (sort-list (vector->list sequence) less?)))
         (else
          (error "vector or list expected"))))
+
+
+;; Copyright (c) 2010 by Enrico Franchi
 
 (define (add1 n) (+ n 1))
 
@@ -167,8 +175,8 @@
                                  (400 "CD") (500 "D") (900 "CM"))
                        (lambda (left right) (< (car left) (car right))))])
     (lambda (n)
-      (let ([thousands (fxquotient n 1000)]
-            [n (fxremainder n 1000)])
+      (let ([thousands (quotient n 1000)]
+            [n (remainder n 1000)])
         (foldl string-append ""
                (simplify-all weights n
                              (build-list thousands (lambda (_) "M"))))))))
