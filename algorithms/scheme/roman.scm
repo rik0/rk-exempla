@@ -1,4 +1,3 @@
-
 ;; Copyright (c) 2010 by Enrico Franchi
 
 (define-syntax when
@@ -187,18 +186,13 @@
   (list simplify-all-a simplify-all-b simplify-all-c
                    simplify-all-d simplify-all-e))
 
-(define (benchmark how-many)
-  (for-each
-    (lambda (simplify-all)
-      (let* ([integer->roman (integer->roman-builder simplify-all)]
-          [times (build-list how-many values)]
-          [numbers (build-list 2000 add1)])
-      (time (map (lambda (n)
-                   (for-each
-                     (lambda (i) (integer->roman n))
-                     times))
-              numbers))))
-    simplify-all-versions))
-
+(define benchmark
+  (let ([numbers (build-list 2000 add1)])
+    (lambda ()
+      (for-each
+       (lambda (simplify-all)
+         (let* ([integer->roman (integer->roman-builder simplify-all)])
+           (time (map integer->roman numbers))))
+    simplify-all-versions))))
       
-(benchmark 1)
+(benchmark)
