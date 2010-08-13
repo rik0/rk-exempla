@@ -1,13 +1,3 @@
-;; (define-syntax while
-;;   (syntax-rules ()
-;;     [(_ c b1 b2 ...)
-;;      (let loop ()
-;;        (when c b1 b2 ... (loop)))]))
-
-;; (define-syntax until
-;;   (syntax-rules ()
-;;     [(_ c b1 b2 ...) (while (not c) b1 b2 ...)]))
-
 (define-syntax when
   (syntax-rules ()
     [(_ c b1 ...)
@@ -18,18 +8,7 @@
     [(_ c b1 ...)
      (cond (c #f) (else b1 ...))]))
 
-;; (define-syntax for
-;;   (syntax-rules ()
-;;     [(_ ([var1 list1] [var2 list2] ...) body)
-;;      (unless (null? list1)
-;;        (let loop ([var1 (car list1)] [ list1 (cdr list1)])
-;;          (for ([var2 list2] ...) body)
-;;          (unless (null? list1)
-;;            (loop (car list1) (cdr list1)))))]
-;;     [(_ () body) body]))
-
 (define (sort sequence less?)
-;;  (declare (standard-bindings) (not safe))
   (define (sort-list lst less?)
     
     (define (mergesort lst)
@@ -181,44 +160,6 @@
             (else
              (simplify-again (- n weight) (cons ch digits)))))))))                   
                   
-;; Another imperative version
-;; Uses non standard for
-;; (define simplify-all-f
-;;   (lambda (weights n digits)
-;;     (for ([weight-pair weights])
-;;       (let  ([weight (car weight-pair)]
-;;              [ch (cadr weight-pair)])
-;;         (let simplify-again ()
-;;           (unless (< n weight)
-;;             (set! n (- n weight))
-;;             (set! digits (cons ch digits))
-;;             (simplify-again)))))
-;;     digits))
-
-;; Another imperative version
-;; Uses user defined macros and for
-;; (define simplify-all-g
-;;   (lambda (weights n digits)
-;;     (for ([weight-pair weights])
-;;       (let  ([weight (car weight-pair)]
-;;              [ch (cadr weight-pair)])
-;;         (until  (< n weight)
-;;             (set! n (- n weight))
-;;             (set! digits (cons ch digits)))))
-;;     digits))
-
-;(define integer->roman-nolet
-;  ((lambda (weights)
-;     (lambda (n)
-;       (let-values ([(thousands n) (quotient/remainder n 1000)])
-;         (foldl string-append ""
-;           (simplify-all weights n(build-list thousands (lambda (_) "M")))))))
-;   (sort '((1 "I") (4 "IV") (5 "V") (9 "IX") (10 "X")
-;                   (40 "XL") (50 "L") (90 "XC") (100 "C")
-;                   (400 "CD") (500 "D") (900 "CM"))
-;         >
-;         #:key car)))
-           
 
 (define (integer->roman-builder simplify-all)
   (let ([weights (sort '((1 "I") (4 "IV") (5 "V") (9 "IX") (10 "X")
