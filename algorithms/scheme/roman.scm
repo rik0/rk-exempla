@@ -1,14 +1,14 @@
 ;; Copyright (c) 2010 by Enrico Franchi
 
-(define-syntax when
-  (syntax-rules ()
-    [(_ c b1 ...)
-     (cond (c b1 ...) (else #f))]))
+;; (define-syntax when
+;;   (syntax-rules ()
+;;     [(_ c b1 ...)
+;;      (cond (c b1 ...) (else #f))]))
 
-(define-syntax unless
-  (syntax-rules ()
-    [(_ c b1 ...)
-     (cond (c #f) (else b1 ...))]))
+;; (define-syntax unless
+;;   (syntax-rules ()
+;;     [(_ c b1 ...)
+;;      (cond (c #f) (else b1 ...))]))
 
 ;;; function sort from file "Sort.scm", Time-stamp: <2008-03-18 15:21:35 feeley>
 ;;; Copyright (c) 2006-2008 by Marc Feeley, All Rights Reserved.
@@ -195,4 +195,4 @@
            (time (map integer->roman numbers))))
     simplify-all-versions))))
       
-(benchmark)
+;;(benchmark)
