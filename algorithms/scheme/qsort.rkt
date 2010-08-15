@@ -29,20 +29,21 @@
   (lambda  (lst less?) 
     (letrec ([qs 
               (lambda (lst k)
-                (cond ((null? lst) (k '()))
-                      (else
-                       (let ([pivot (car lst)]
-                             [rest (cdr lst)])
-                         (cp-partition rest 
-                                       (lambda (x) (less? x pivot))
-                                       (lambda (less-than greater-than)
-                                      (qs greater-than
-                                          (lambda (sorted-gt)
-                                            (qs less-than
-                                                (lambda (sorted-lt)
-                                                  (cp-append
-                                                   sorted-lt
-                                                   (cons pivot sorted-gt) k)))))))))))])
+                (cond 
+                  ((null? lst) (k '()))
+                  (else
+                   (let ([pivot (car lst)]
+                         [rest (cdr lst)])
+                     (cp-partition rest 
+                                   (lambda (x) (less? x pivot))
+                                   (lambda (less-than greater-than)
+                                     (qs greater-than
+                                         (lambda (sorted-gt)
+                                           (qs less-than
+                                               (lambda (sorted-lt)
+                                                 (cp-append
+                                                  sorted-lt
+                                                  (cons pivot sorted-gt) k)))))))))))])
       (qs lst (lambda (v) v)))))
 
 (define (random-list max length)
