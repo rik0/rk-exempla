@@ -63,14 +63,13 @@
       (else
         (loop (add1 n) (cons (constructor n) lst))))))
 
-
 (define foldl
   (lambda (f z lst)
-    (let loop ([acc z] [lst lst])
+    (let loop ((acc z) (lst lst))
       (cond
-        ((null? lst) z)
-        (else
-          (loop (f acc (car lst)) (cdr lst)))))))
+       ((null? lst) acc)
+       (else
+	(loop (f (car lst) acc) (cdr lst)))))))
 
 ;; Uses a named let to perform recursion
 (define simplify-by-weight-a
@@ -172,7 +171,7 @@
   (let ([weights (sort '((1 "I") (4 "IV") (5 "V") (9 "IX") (10 "X")
                                  (40 "XL") (50 "L") (90 "XC") (100 "C")
                                  (400 "CD") (500 "D") (900 "CM"))
-                       (lambda (left right) (< (car left) (car right))))])
+                       (lambda (left right) (> (car left) (car right))))])
     (lambda (n)
       (let ([thousands (quotient n 1000)]
             [n (remainder n 1000)])
