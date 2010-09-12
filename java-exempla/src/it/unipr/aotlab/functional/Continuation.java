@@ -1,3 +1,5 @@
+package it.unipr.aotlab.functional;
+
 /**
  * Created by IntelliJ IDEA.
  * User: enrico

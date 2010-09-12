@@ -1,3 +1,10 @@
+package it.unipr.aotlab.functional;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: enrico
@@ -5,7 +12,7 @@
  * Time: 10:12:38 AM
  * To change this template use File | Settings | File Templates.
  */
-public class FList<E> {
+public class FList<E> implements Iterable<E> {
     final private E value;
     final private FList<E> next;
     final static private FList EMPTY_F_LIST = new FList(null, null);
@@ -35,6 +42,19 @@ public class FList<E> {
         return this.equals(EMPTY_F_LIST);
     }
 
+    public int length() {
+        int len = 0;
+        for(E e : this) {
+            ++len;
+        }
+        return len;
+    }
+
+    public Iterator<E> iterator() {
+        return new FListIterator(this);
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,12 +77,37 @@ public class FList<E> {
 
     @Override
     public String toString() {
-        return "FList{" +
+        return "it.unipr.aotlab.functional.FList{" +
                 "value=" + value +
                 ", next=" + next +
                 '}';
     }
 
+    static private class FListIterator<E> implements Iterator<E> {
+        private FList<E> currentNode;
+
+        private FListIterator(FList<E> currentNode) {
+            this.currentNode = currentNode;
+        }
+
+        public boolean hasNext() {
+            return !currentNode.isEmpty();
+        }
+
+        public E next() {
+            if(hasNext()) {
+                E tmp =  currentNode.car();
+                currentNode = currentNode.cdr();
+                return tmp;
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
 
 }
 
