@@ -1,9 +1,6 @@
 package it.unipr.aotlab.functional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +51,14 @@ public class FList<E> implements Iterable<E> {
         return new FListIterator(this);
     }
 
+    public int fillContainer(Collection<? super E> c) {
+        int insertions = 0;
+        for(E item : this) {
+            c.add(item);
+            ++insertions;
+        }
+        return insertions;
+    }
 
     @Override
     public boolean equals(Object o) {
