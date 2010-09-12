@@ -65,12 +65,17 @@ public class FList<E> implements Iterable<E> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FList FList = (FList) o;
+        FList otherList = (FList) o;
+        Iterator<E> otherIterator = otherList.iterator();
+        Iterator<E> thisIterator = this.iterator();
 
-        if (next != null ? !next.equals(FList.next) : FList.next != null) return false;
-        if (value != null ? !value.equals(FList.value) : FList.value != null) return false;
+        while(otherIterator.hasNext() && thisIterator.hasNext()) {
+            if(!otherIterator.next().equals(thisIterator.next())) {
+                return false;
+            }
+        }
 
-        return true;
+        return (otherIterator.hasNext() == thisIterator.hasNext());
     }
 
     @Override
@@ -82,10 +87,17 @@ public class FList<E> implements Iterable<E> {
 
     @Override
     public String toString() {
-        return "it.unipr.aotlab.functional.FList{" +
-                "value=" + value +
-                ", next=" + next +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+
+        for(Iterator<E> it = iterator(); it.hasNext();) {
+            sb.append(it.next());
+            if(it.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
     static private class FListIterator<E> implements Iterator<E> {
