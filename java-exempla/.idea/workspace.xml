@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="a9f42cca-b3af-442c-8342-7bc6a6658bd3" name="Default" comment="" />
+    <list default="true" readonly="true" id="a9f42cca-b3af-442c-8342-7bc6a6658bd3" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="java-exempla.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -63,7 +65,7 @@
       <file leaf-file-name="Partitioner.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Partitioner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="67" selection-start="678" selection-end="678" vertical-scroll-proportion="0.46714458">
+            <state line="40" column="0" selection-start="1311" selection-end="1311" vertical-scroll-proportion="0.8124253">
               <folding />
             </state>
           </provider>
@@ -485,7 +487,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Partitioner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="67" selection-start="678" selection-end="678" vertical-scroll-proportion="0.46714458">
+        <state line="40" column="0" selection-start="1311" selection-end="1311" vertical-scroll-proportion="0.8124253">
           <folding />
         </state>
       </provider>
