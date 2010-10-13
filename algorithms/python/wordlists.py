@@ -11,6 +11,8 @@ import itertools as it
 
 from os import path
 
+WORDLIST_URL = 'ftp://ftp.ox.ac.uk/pub/wordlists/american/dic-0294.tar.gz'
+
 class DownloadReport(object):
     '''Helper class to be used as urlretrieve hook.'''
     def __init__(self):
