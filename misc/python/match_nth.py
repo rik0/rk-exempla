@@ -17,4 +17,4 @@ class Nth(object):
 
 rex = re.compile('a(\w+)')
 
-print rex.sub(Nth(r'A\1', 1), "aardvark abbot abide")
+print rex.sub(Nth(r'A\1', 0), "aardvark abbot abide")
