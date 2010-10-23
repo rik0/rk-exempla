@@ -49,7 +49,7 @@ def method5(loop_count):
     return out_str
 
 def bench(loop_count, methods):
-    for name, method in methods:
+    for method in methods:
         t = timeit.Timer(functools.partial(method, loop_count))
         sys.stdout.write('%f\t' % t.timeit(number = 1))
 
@@ -83,13 +83,14 @@ def main():
 
 
     if selected_method_names:
-        methods = [(name, method) for (name, method) in globals().items()
+        methods = [method for (name, method) in globals().items()
                    if name in selected_method_names and callable(method)]
     else:
-        methods = tuple([('baseline', baseline)] +
-                        [(name, f) for (name, f) in globals().items()
+        methods = tuple([baseline] +
+                        [f for (name, f) in globals().items()
                          if ('method' in name) and callable(f)])
-    methods = sorted(methods, key=op.itemgetter(0))
+
+    methods = sorted(methods, key=op.attrgetter('func_name'))
     if not input_sizes:
         input_sizes.append(100000)
 
