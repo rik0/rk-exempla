@@ -12,6 +12,14 @@ def baseline(loop_count):
     for num in xrange(loop_count):
         str(num)
 
+def baseline2(loop_count):
+    lst = []
+    for num in xrange(loop_count):
+        lst.append(str(num))
+    return lst
+
+def baseline3(loop_count):
+    return [str(int) for int in xrange(loop_count)]
 
 def method1(loop_count):
     out_str = ''
