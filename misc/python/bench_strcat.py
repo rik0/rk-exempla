@@ -48,10 +48,6 @@ def method5(loop_count):
     out_str = file_str.getvalue()
     return out_str
 
-def bench(loop_count, methods):
-    for method in methods:
-        t = timeit.Timer(functools.partial(method, loop_count))
-        sys.stdout.write('%f\t' % t.timeit(number = 1))
 
 def evaluate_range(range_str):
     def aux(range_str):
@@ -64,10 +60,14 @@ def evaluate_range(range_str):
     else:
         return aux(range_str)
 
+def bench(loop_count, functions):
+    for function in functions:
+        t = timeit.Timer(functools.partial(function, loop_count))
+        sys.stdout.write('%f\t' % t.timeit(number = 1))
 
 def main():
     input_sizes = []
-    selected_method_names = []
+    selected_function_names = []
     for arg in sys.argv[1:]:
         try:
             input_size = int(arg)
@@ -76,29 +76,32 @@ def main():
                 range_ = evaluate_range(arg)
                 input_sizes.extend(range_)
             except Exception:
-                selected_method_names.append(arg)
+                selected_function_names.append(arg)
         else:
             input_sizes.append(input_size)
 
 
 
-    if selected_method_names:
-        methods = [method for (name, method) in globals().items()
-                   if name in selected_method_names and callable(method)]
+    if selected_function_names:
+        functions = [function for (name, function) in globals().items()
+                   if name in selected_function_names and callable(function)]
     else:
-        methods = tuple([baseline] +
+        functions = tuple([baseline] +
                         [f for (name, f) in globals().items()
                          if ('method' in name) and callable(f)])
 
-    methods = sorted(methods, key=op.attrgetter('func_name'))
+    functions = sorted(functions, key=op.attrgetter('func_name'))
     if not input_sizes:
         input_sizes.append(100000)
 
+    sys.stdout.write('its\t')
+    for function in functions:
+        sys.stdout.write('%s\t' % function.func_name.ljust(8))
+    sys.stdout.write('\n')
     for loop_count in sorted(input_sizes):
         sys.stdout.write('%d\t' % loop_count)
-        bench(loop_count, methods)
+        bench(loop_count, functions)
         print
-
 
 if __name__ == '__main__':
     main()
