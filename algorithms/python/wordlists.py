@@ -87,8 +87,7 @@ def read_file(filename, no_words, predicate):
     If no_words > of the number of words in filename, all words are returned.
     If no_words is None, all words are returned.'''
     with open(filename) as fh:
-        all_words = fh.read().split('\n')
-        filtered_words = filter(predicate, (w.strip() for w in all_words))
+        filtered_words = filter(predicate, (w.strip() for w in fh))
         if no_words and no_words < len(filtered_words):
             selected_words = random.sample(filtered_words, no_words)
         else:

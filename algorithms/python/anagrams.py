@@ -1,11 +1,16 @@
-import os, time
+from __future__ import with_statement
+
+import os
+import sys
+import time
+
+import itertools as it
+
 from os import path
 
-import wordlists
-
-def create_key(word):
-    return frozenset(word)
-
+def words_iterable(seq, predicate = lambda x: True):
+    return (word for word in
+            (line.strip() for line in seq) if predicate(word))
 
 class Anagrams(object):
     def __init__(self, dictionary):
@@ -23,20 +28,60 @@ class Anagrams(object):
             key = self.make_key(word)
             self.indexed_words.setdefault(key, []).append(word)
 
-    def anagrams(self, word):
+    def anagram(self, word):
         key = self.make_key(word)
         return tuple(self.indexed_words[key])
 
+    def anagrams(self):
+        return [anagrams for key, anagrams in self.indexed_words.iteritems()
+                    if len(anagrams) > 1]
 
-def main(lengths):
-    DICT_COMPONENT = 'dictionaries'
-    DICTIONARY = path.join(os.getcwd(), DICT_COMPONENT)
-    WORDLIST_URL = 'ftp://ftp.ox.ac.uk/pub/wordlists/american/dic-0294.tar.gz'
+    def stats(self, out=sys.stdout):
+        def word_length(al):
+            return len(al[0])
+        anagrams_list = self.anagrams()
+        longest_anagram = max(anagrams_list, key=word_length)
+        word_with_max_anagrams = max(anagrams_list, key=len)
 
-    wordlist = wordlists.get_wordlist(DICTIONARY, WORDLIST_URL, lengths=lengths,
-                                      predicate=str.isalpha)
+        print >>out, 'Number of anagrams:', len(anagrams_list)
+        print >>out, 'Greatest number of anagrams:', word_with_max_anagrams,
+        print >>out, len(word_with_max_anagrams)
+        print >>out, 'Longest anagram:', longest_anagram, len(longest_anagram[0])
 
-    start = time.clock()
+        print >>out
+        print >>out,  'Anagrams by number of anagrams'
+
+        for key, group_it in it.groupby(sorted(anagrams_list, key=len), len):
+            print key, len(list(group_it))
+
+        print >>out
+        print >>out,  'Anagrams by anagram length'
+
+        for key, group_it in it.groupby(sorted(anagrams_list, key=word_length),
+                                        word_length):
+            print key, len(list(group_it))
+
+def main():
+    try:
+        DICT_FILE = sys.argv[1]
+    except IndexError:
+        DICT_FILE = '2of12.txt'
+    start = time.time()
+    with file(DICT_FILE) as fh:
+        wordlist = set(words_iterable(fh))
+    print 'Read file in: ', time.time() - start
+    print len(wordlist), 'words available.'
+
+    start = time.time()
     anagr = Anagrams(wordlist)
-    print anagr.anagrams('fighter')
-    print time.clock() - start
+    print anagr.anagram('fighter')
+    print time.time() - start
+
+    anagr.stats()
+    return anagr
+
+if __name__ == '__main__':
+    main()
+
+
+
