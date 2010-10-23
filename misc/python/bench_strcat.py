@@ -21,7 +21,7 @@ def baseline2(loop_count):
 def baseline3(loop_count):
     return [str(int) for int in xrange(loop_count)]
 
-def method1(loop_count):
+def methodx(loop_count):
     out_str = ''
     for num in xrange(loop_count):
         out_str += str(num)
@@ -35,6 +35,7 @@ def method2(loop_count):
         out_str += str(num)
     return out_str
 
+@disable_test
 def method3(loop_count):
     from array import array
     char_array = array('c')
@@ -48,6 +49,9 @@ def method4(loop_count):
         str_list.append(str(num))
     out_str = ''.join(str_list)
     return out_str
+
+def method4b(loop_count):
+    return ''.join(str(num) for num in xrange(loop_count))
 
 def method5(loop_count):
     file_str = StringIO()
@@ -68,9 +72,12 @@ def evaluate_range(range_str):
     else:
         return aux(range_str)
 
+
 def bench(loop_count, functions):
     for function in functions:
-        t = timeit.Timer(functools.partial(function, loop_count))
+        #t = timeit.Timer(functools.partial(function, loop_count))
+        t = timeit.Timer('%s(%d)' % (function.func_name, loop_count),
+                         setup='from __main__ import %s' % function.func_name)
         sys.stdout.write('%f\t' % t.timeit(number = 1))
 
 def main():
