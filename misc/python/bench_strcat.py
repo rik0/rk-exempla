@@ -48,19 +48,13 @@ def method5(loop_count):
     out_str = file_str.getvalue()
     return out_str
 
-
-
-def bench(loop_count):
-    methods = ([('baseline', baseline)] + 
-               [(name, f) for name, f in globals().iteritems() 
-                if ('method' in name) and callable(f)])
+def bench(loop_count, methods):
     for name, method in sorted(methods, key=op.itemgetter(0)):
         t = timeit.Timer(functools.partial(method, loop_count))
-        print name, 
-        print t.timeit(number = 1)
+        print t.timeit(number = 1),
 
-    
-if __name__ == '__main__':
+
+def main():
     try:
         loop_count = int(sys.argv[1])
     except IndexError:
@@ -68,7 +62,17 @@ if __name__ == '__main__':
     except ValueError, e:
         print e
         loop_count = 10000
-        
-    print 'Selected loopcount:', loop_count
-    
-    bench(loop_count)
+
+    selected_method_names = sys.argv[2:]
+    if selected_method_names:
+        methods = [(name, method) for (name, method) in globals().items()
+                   if name in selected_method_names and callable(method)]
+    else:
+        methods = tuple([('baseline', baseline)] +
+                        [(name, f) for (name, f) in globals().items()
+                         if ('method' in name) and callable(f)])
+    bench(loop_count, methods)
+
+
+if __name__ == '__main__':
+    main()
