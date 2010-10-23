@@ -53,17 +53,35 @@ def bench(loop_count, methods):
         t = timeit.Timer(functools.partial(method, loop_count))
         sys.stdout.write('%f\t' % t.timeit(number = 1))
 
+def evaluate_range(range_str):
+    def aux(range_str):
+        return range(*(int(p) for p in range_str.split(':')))
+
+    if 'e' in range_str:
+        base, range_str = range_str.split('e')
+        base = int(base)
+        return [base**x for x in aux(range_str)]
+    else:
+        return aux(range_str)
+
 
 def main():
-    try:
-        loop_count = int(sys.argv[1])
-    except IndexError:
-        loop_count = 10000
-    except ValueError, e:
-        print e
-        loop_count = 10000
+    input_sizes = []
+    selected_method_names = []
+    for arg in sys.argv[1:]:
+        try:
+            input_size = int(arg)
+        except ValueError:
+            try:
+                range_ = evaluate_range(arg)
+                input_sizes.extend(range_)
+            except Exception:
+                selected_method_names.append(arg)
+        else:
+            input_sizes.append(input_size)
 
-    selected_method_names = sys.argv[2:]
+
+
     if selected_method_names:
         methods = [(name, method) for (name, method) in globals().items()
                    if name in selected_method_names and callable(method)]
@@ -71,8 +89,13 @@ def main():
         methods = tuple([('baseline', baseline)] +
                         [(name, f) for (name, f) in globals().items()
                          if ('method' in name) and callable(f)])
-    bench(loop_count, methods)
-    print
+    if not input_sizes:
+        input_sizes.append(100000)
+
+    for loop_count in sorted(input_sizes):
+        sys.stdout.write('%d\t' % loop_count)
+        bench(loop_count, methods)
+        print
 
 
 if __name__ == '__main__':
