@@ -51,7 +51,7 @@ def method5(loop_count):
 def bench(loop_count, methods):
     for name, method in sorted(methods, key=op.itemgetter(0)):
         t = timeit.Timer(functools.partial(method, loop_count))
-        print t.timeit(number = 1),
+        sys.stdout.write('%f\t' % t.timeit(number = 1))
 
 
 def main():
@@ -72,6 +72,7 @@ def main():
                         [(name, f) for (name, f) in globals().items()
                          if ('method' in name) and callable(f)])
     bench(loop_count, methods)
+    print
 
 
 if __name__ == '__main__':
