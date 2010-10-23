@@ -21,39 +21,23 @@ def baseline2(loop_count):
 def baseline3(loop_count):
     return [str(int) for int in xrange(loop_count)]
 
-def methodx(loop_count):
+def str_sum(loop_count):
     out_str = ''
     for num in xrange(loop_count):
         out_str += str(num)
     return out_str
 
-@disable_test
-def method2(loop_count):
-    from UserString import MutableString
-    out_str = MutableString()
-    for num in xrange(loop_count):
-        out_str += str(num)
-    return out_str
-
-@disable_test
-def method3(loop_count):
-    from array import array
-    char_array = array('c')
-    for num in xrange(loop_count):
-        char_array.fromstring(str(num))
-    return char_array.tostring()
-
-def method4(loop_count):
+def str_join(loop_count):
     str_list = []
     for num in xrange(loop_count):
         str_list.append(str(num))
     out_str = ''.join(str_list)
     return out_str
 
-def method4b(loop_count):
+def str_join_lc(loop_count):
     return ''.join(str(num) for num in xrange(loop_count))
 
-def method5(loop_count):
+def string_io(loop_count):
     file_str = StringIO()
     for num in xrange(loop_count):
         file_str.write(str(num))
@@ -103,7 +87,7 @@ def main():
     else:
         functions = tuple([baseline] +
                         [f for (name, f) in globals().items()
-                         if ('method' in name) and callable(f)])
+                         if ('str' in name) and callable(f)])
 
     functions = sorted(functions, key=op.attrgetter('func_name'))
     if not input_sizes:
