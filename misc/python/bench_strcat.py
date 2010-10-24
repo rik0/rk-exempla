@@ -27,6 +27,13 @@ def str_sum(loop_count):
         out_str += str(num)
     return out_str
 
+def str_sum_b(loop_count):
+    out_str = ''
+    for num in xrange(loop_count):
+        out_str = out_str + str(num)
+    return out_str
+
+
 def str_join(loop_count):
     str_list = []
     for num in xrange(loop_count):
