@@ -8,12 +8,13 @@ class Point(collections.namedtuple('Point', 'x y')):
         return Point(self.x+other.x, self.y+other.y)
 
     def __sub__(self, other):
-        return Point(self.x+other.x, self.y+other.y)
+        return Point(self.x-other.x, self.y-other.y)
 
 def direction(origin, first, second):
     return cross_product(second-origin, first-origin)
 
-
+def direction(origin, first, second):
+    return cross_product(second-origin, first-origin)
 
 def on_segment(origin, first, second):
     if (min(origin.x, first.x) <= second.x <= max(origin.x, first.x)
