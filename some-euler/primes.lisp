@@ -25,14 +25,26 @@
 	  *primes-bound* max))
   (values))
 
-(compute-primes 100000)
+(compute-primes 10000)
 
-(defun test-sieve ()
-  (flet ((slow-primep (n)
-	   (not
-	    (loop for i from 2 to (1- n)
-	       thereis (= (mod n i) 0)))))
-    (loop
-       for i from 0 below (length *primes-table*)
-       always (eq (bit *primes-table* i)
-		  (slow-primep i)))))
+(defun factorize (n &optional 
+		  (factors *primes*) 
+		  (factorization (make-hash-table)))
+  (if (and factors (> n 1))
+      (let ((p (car factors)))
+	(multiple-value-bind (q r) (truncate n p)
+	  (if (= r 0)
+	      (progn
+		(setf (gethash p factorization)
+		      (1+ (or (gethash p factorization) 0)))
+		(factorize q factors factorization))
+	      (factorize n (cdr factors) factorization))))
+      factorization))
+
+(defun print-factorization (factorization &optional (stream t))
+  (maphash (lambda (base exp)
+	     (format stream "~d^~d * " base exp))
+	   factorization)
+  (princ 1))
+
+(print-factorization (factorize (* 7 3 2 5 67 2 3 16 8 31 32 3257)))
