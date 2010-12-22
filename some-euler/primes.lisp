@@ -12,33 +12,27 @@
              do (setf (bit sieve j) 0)))
     sieve))
 
-(defun slow-primep (n)
-  (not
-   (loop for i from 2 to (1- n)
-      thereis (= (mod n i) 0))))
-
+(defparameter *primes-bound* 1)
 (defparameter *primes* nil)
 (defparameter *primes-table* nil)
 
-(defun compute-primes (max)
-  (let ((sieve (erat-sieve max)))
+(defun compute-primes (max &key (sieve-f #'erat-sieve))
+  (let ((sieve (funcall sieve-f max)))
     (setq *primes*
           (loop for i from 0 to (1- max)
              append (when (/= (bit sieve i) 0) (list i)))
-          *primes-table*
-          sieve))
+          *primes-table* sieve
+	  *primes-bound* max))
   (values))
 
-
-
 (compute-primes 100000)
-;;(print *primes*)
-;;(print *primes-table*)    
 
-(defun test-stuff ()
-  (loop 
-     for i from 0 below (length *primes-table*)
-     always (eq (bit *primes-table* i)
-                (slow-primep i))))
-
-(test-stuff)
+(defun test-sieve ()
+  (flet ((slow-primep (n)
+	   (not
+	    (loop for i from 2 to (1- n)
+	       thereis (= (mod n i) 0)))))
+    (loop
+       for i from 0 below (length *primes-table*)
+       always (eq (bit *primes-table* i)
+		  (slow-primep i)))))
