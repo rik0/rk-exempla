@@ -27,6 +27,10 @@
 
 (compute-primes 10000)
 
+(defun enough-primes (max)
+  (when (< *primes-bound* max)
+    (compute-primes max)))
+
 (defun factorize (n &optional 
 		  (factors *primes*) 
 		  (factorization (make-hash-table)))
