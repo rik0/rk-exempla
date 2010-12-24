@@ -4,6 +4,8 @@ import random
 
 import cStringIO
 
+import Tkinter as tk
+
 BLANK = 0x0
 NOUGHT = 0x1
 CROSS = 0x2
@@ -128,7 +130,7 @@ class Player(object):
 
 
 class TerminalAskTheHuman(object):
-    rex = re.compile('(\d+),\s+(\d+)')
+    rex = re.compile('(\d+),\s*(\d+)')
 
     def tentative_move(self, tentative, whoami, board):
         line = raw_input('P%s: %s> ' % (whoami, tentative)).strip()
@@ -154,7 +156,7 @@ class RandomPlayer(object):
         moves = list(board.possible_moves())
         move = random.choice(moves)
         return move
-
+    
 class Game(object):
     def __init__(self, ui, *args):
         self.board = Board()
@@ -206,8 +208,50 @@ class TextualInterface(object):
         print board
 
 
+class TkInterface(tk.Frame):
+    HEIGHT = 300
+    WIDTH = 300
+    def __init__(self, root):
+        tk.Frame.__init__(self, root, 
+                          height=TkInterface.HEIGHT, 
+                          width=TkInterface.WIDTH)
+        self.canvas = tk.Canvas(self, 
+                                height=TkInterface.HEIGHT, 
+                                width=TkInterface.WIDTH)
+        self.canvas.pack()
+        self.draw_frame()
+        self.bind_events()
+        self.pack()
+
+    def draw_frame(self):
+        height_first_third = TkInterface.HEIGHT / 3
+        height_second_third = 2 * height_first_third
+        width_first_third = TkInterface.WIDTH / 3
+        width_second_third = 2 * width_first_third
+        self.canvas.create_line(0, width_first_third, 
+                                TkInterface.HEIGHT, width_first_third,
+                                width=3)
+        self.canvas.create_line(0, width_second_third, 
+                                TkInterface.HEIGHT, width_second_third,
+                                width=3)
+        self.canvas.create_line(height_first_third, 0,
+                                height_first_third, TkInterface.WIDTH,
+                                width=3)
+        self.canvas.create_line(height_second_third, 0,
+                                height_second_third, TkInterface.WIDTH,
+                                width=3)
+
+    def bind_events(self):
+        self.canvas.bind("<Button-1>", self._user_click)
+        
+    def _user_click(self, event):
+        print event.x/100, event.y/100
 
 if __name__ == '__main__':
+    root = tk.Tk()
+    tkframe = TkInterface(root)
+    tkframe.mainloop()
+    exit(0)
     ui = TextualInterface()
     game = Game(ui,
                 Player(NOUGHT, RandomPlayer()),
@@ -215,6 +259,6 @@ if __name__ == '__main__':
     game.play()
     game = Game(ui,
                 Player(NOUGHT, TerminalAskTheHuman()),
-                Player(CROSS, TerminalAskTheHuman()))
+                Player(CROSS, RandomPlayer()))
     game.play()
 

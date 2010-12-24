@@ -1,13 +1,13 @@
 import os
 import sys
-import time
 import itertools as it
-import math
 
 import wordlists
+import timeit
+import time
+import math
 
 from anagrams import words_iterable
-
     
 def yield_anagrams(dictionary, word):
     return [word for word in 
@@ -20,6 +20,7 @@ def time_yield(min_, max_):
             
             
 def main():
+    WORDLIST_URL = 'ftp://ftp.ox.ac.uk/pub/wordlists/american/dic-0294.tar.gz'
     try:
         DICT_FILE = sys.argv[1]
     except IndexError:
@@ -34,6 +35,4 @@ def main():
     return wordlist
 
 if __name__ == '__main__':
-    main()
-
-    
+    print timeit.timeit(main, number=1) 
