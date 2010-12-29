@@ -15,6 +15,7 @@
 *.pyc
 *.a
 *.dSYM
+*.fasl
 
 # CMake stuff
 CMakeCache.txt
