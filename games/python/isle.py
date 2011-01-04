@@ -56,10 +56,8 @@ class Animal(object):
             self.energy >>= 1
             new_animal = copy.deepcopy(self)
             mutation = random.randint(0, 7)
-            new_animal.genes[mutation] = max(
-                1,
-                new_animal.genes[mutation] + random.randint(-1, 2)
-            )
+            new_animal.genes[mutation] += random.randint(-1, 1)
+            new_animal.genes[mutation] = max(new_animal.genes[mutation], 1)
             ANIMALS.append(new_animal)
 
     def __repr__(self):
