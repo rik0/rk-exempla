@@ -112,13 +112,12 @@ def evolution():
             try:
                 steps = int(command)
             except ValueError:
-                continue
-            else:
-                for i in xrange(steps):
-                    update_world()
-                    if i % 1000 == 0:
-                        sys.stdout.write('.')
-                        sys.stdout.flush()
+                steps = 1
+            for i in xrange(steps):
+                update_world()
+                if i % 1000 == 0:
+                    sys.stdout.write('.')
+                    sys.stdout.flush()
 
     finally:
         pickle.dump(
