@@ -62,6 +62,9 @@ class Animal(object):
             )
             ANIMALS.append(new_animal)
 
+    def __repr__(self):
+        return 'Animal(x=%(x)s, y=%(y)s, energy=%(energy)s, dir=%(dir)s, genes=%(genes)s)' % vars(self)
+
 def update_world():
     global ANIMALS
     ANIMALS = [animal for animal in ANIMALS if animal.energy > 0]
@@ -94,6 +97,8 @@ def evolution():
                 break
             command = raw_input('steps> ')
             if command.lower() == 'quit':
+                for animal in ANIMALS:
+                    print animal
                 break
             try:
                 steps = int(command)
@@ -134,4 +139,5 @@ ANIMALS = [
     )
 ]
 
-evolution()
+if __name__ == '__main__':
+    evolution()
