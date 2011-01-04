@@ -1,5 +1,5 @@
 (defparameter *width* 80)
-(defparameter *height* 24)
+(defparameter *height* 23)
 (defparameter *length* (* *width* *height*))
 
 (defun neighbours (pos)
