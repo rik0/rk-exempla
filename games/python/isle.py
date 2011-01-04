@@ -1,7 +1,14 @@
+import itertools
 import random
 import copy
 import sys
 import pickle
+
+try:
+    import psycho
+    psycho.full()
+except ImportError:
+    pass
 
 def random_plant(left, top, width, height):
     pos_x = random.randint(left, left+width-1)
@@ -95,9 +102,13 @@ def evolution():
                 break
             command = raw_input('steps> ')
             if command.lower() == 'quit':
+                break
+            if command.lower() == 'animals':
                 for animal in ANIMALS:
                     print animal
-                break
+                print [sum(x)/float(len(ANIMALS)) for x in itertools.izip(
+                            *[animal.genes for animal in ANIMALS])]
+                continue
             try:
                 steps = int(command)
             except ValueError:
