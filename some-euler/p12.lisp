@@ -18,21 +18,6 @@
 ;; 			  (setq n (/ n p))))))
 ;; 	  factorization));))
 	 
-(defun factorize (n &optional 
-		  (factors *primes*) 
-		  (factorization (make-hash-table)))
-  (if factors
-      (let ((p (car factors)))
-	(multiple-value-bind (m d) (truncate n p)
-	  (if (= d 0)
-	      (progn
-		(setf (gethash factorization p) 0)
-;;		(setf (gethash factorization p)
-;;		      (1+ (or nil; (gethash factorization p) 
-;;			      0)))
-		(factorize m factors factorization))
-	      (factorize m (cdr factors) factorization))))
-      factorization))
 			     
 	
   
