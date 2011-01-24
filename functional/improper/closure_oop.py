@@ -1,23 +1,56 @@
-import copy
+import copy as cp
 import collections
 
 def slot(attributes):
     def _aux(method):
         attributes[method.func_name] = method
+        _aux.func_name = method.func_name
         return method
     return _aux
 
-def fobject(**attributes):
+def attributes_only(method_slot):
+    def _aux(obj, *args):
+        attributes = obj('attributes')
+        return method_slot(attributes, args)
+    _aux.func_name = method_slot.func_name
+    return _aux
+
+
+def meta_object(label, ancestors=[], **attributes):
+    attributes.update(locals())
+    
     @slot(attributes)
-    def getSlot(slot_name, default=None):
+    @attributes_only
+    def getSlot(attributes, slot_name, default=None):
         return attributes.get(slot_name)
 
     @slot(attributes)
-    def show():
+    def show(obj):
+        attributes = obj('attributes')
         return repr(attributes)
 
+    @slot(attributes)
+    @attributes_only
+    def slots(attributes):
+        return attributes.keys()
+
+    def missing_attribute(obj, attribute):
+        raise AttributeError('object %s has no attribute "%s"' % (obj('label'), attribute))
+
+    @slot(attributes)
+    def copy(obj):
+        return cp.deepcopy(obj)
+
+    @slot(attributes)
+    def inherit(obj):
+        new_obj = meta_object('clone')
+        new_obj('ancestors=', [obj])
+        new_obj('type=')
+        return
+
+
     def ancestors_iterator():
-        ancestors = attributes.get('protos', [])
+        ancestors = attributes.get('ancestors', [])
         visited = set()
 
         while ancestors:
@@ -27,17 +60,20 @@ def fobject(**attributes):
             else:
                 visited.add(ancestor)
                 yield ancestor
-                ancestors.extend(ancestor.get('protos', []))
-
+                ancestors.extend(ancestor.get('ancestors', []))
 
     def lookup_ancestors(attribute):
-        pass
-
+        for ancestor in ancestors_iterator():
+            method = ancestor('getSlot')
+            if method:
+                return method
+        else:
+            raise KeyError
 
     def lookup(attribute):
         try:
             return attributes[attribute]
-        except AttributeError:
+        except KeyError:
             return lookup_ancestors(attribute)
 
     def do(command, *args):
@@ -46,24 +82,44 @@ def fobject(**attributes):
             attributes[attribute] = args[0]
         elif command.endswith('!'):
             attribute = command[:-1]
-            del attributes[attribute]
+            try:
+                del attributes[attribute]
+            except KeyError:
+                missing_attribute(do, attribute)
         else:
             try:
-                attribute = attributes[command]
+                attribute = lookup(command)
+            except KeyError:
+                missing_attribute(do, command)
+            else:
                 if callable(attribute):
-                    return attribute(*args)
+                    return attribute(attributes, *args)
                 else:
                     return attribute
-            except KeyError:
-                raise AttributeError('object has no attribute "%s"' % (command))
     return do
 
-person=fobject()
-person('name=', 'Mark')
-person('surname=', 'Twain')
+base_object = meta_object()
 
-print person('name'), person('surname')
-print person('getSlot', 'foo')
-print person('show')
+def test():
+    '''
+    >>> person=meta_object()
+    >>> person('name=', 'Mark')
+    >>> person('surname=', 'Twain')
+    >>> print person('name'), person('surname')
+    Mark Twain
+    >>> sorted(person('slots'))
+    ['name', 'surname']
+    >>> print person('getSlot', 'foo')
+    None
+    >>> person('name!')
+    >>> print person('name')
+    Traceback (most recent call last):
+        ...
+    AttributeError: ...
 
-#print person('foo')
+    '''
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL|doctest.ELLIPSIS)
