@@ -1,0 +1,13 @@
+(defn Y [F]
+  (let [G (fn [K]
+	    (F (fn [A]
+		 ((K K) A))))]
+    (G G)))
+
+
+(def fact
+     (Y (fn [f]
+	  (fn [n]
+	    (if (<= n 0)
+	      1
+	      (* n (f (- n 1))))))))
