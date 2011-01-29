@@ -1,7 +1,14 @@
+import itertools
 import random
 import copy
 import sys
 import pickle
+
+try:
+    import psycho
+    psycho.full()
+except ImportError:
+    pass
 
 def random_plant(left, top, width, height):
     pos_x = random.randint(left, left+width-1)
@@ -56,11 +63,12 @@ class Animal(object):
             self.energy >>= 1
             new_animal = copy.deepcopy(self)
             mutation = random.randint(0, 7)
-            new_animal.genes[mutation] = max(
-                1,
-                new_animal.genes[mutation] + random.randint(-1, 2)
-            )
+            new_animal.genes[mutation] += random.randint(-1, 1)
+            new_animal.genes[mutation] = max(new_animal.genes[mutation], 1)
             ANIMALS.append(new_animal)
+
+    def __repr__(self):
+        return 'Animal(x=%(x)s, y=%(y)s, energy=%(energy)s, dir=%(dir)s, genes=%(genes)s)' % vars(self)
 
 def update_world():
     global ANIMALS
@@ -95,16 +103,21 @@ def evolution():
             command = raw_input('steps> ')
             if command.lower() == 'quit':
                 break
+            if command.lower() == 'animals':
+                for animal in ANIMALS:
+                    print animal
+                print [sum(x)/float(len(ANIMALS)) for x in itertools.izip(
+                            *[animal.genes for animal in ANIMALS])]
+                continue
             try:
                 steps = int(command)
             except ValueError:
-                continue
-            else:
-                for i in xrange(steps):
-                    update_world()
-                    if i % 1000 == 0:
-                        sys.stdout.write('.')
-                        sys.stdout.flush()
+                steps = 1
+            for i in xrange(steps):
+                update_world()
+                if i % 1000 == 0:
+                    sys.stdout.write('.')
+                    sys.stdout.flush()
 
     finally:
         pickle.dump(
@@ -134,4 +147,5 @@ ANIMALS = [
     )
 ]
 
-evolution()
+if __name__ == '__main__':
+    evolution()

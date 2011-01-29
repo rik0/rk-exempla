@@ -1,5 +1,7 @@
+(proclaim '(optimize (speed 3) (space 0) (debug 0)))
+
 (defparameter *width* 80)
-(defparameter *height* 24)
+(defparameter *height* 23)
 (defparameter *length* (* *width* *height*))
 
 (defun neighbours (pos)
@@ -69,4 +71,3 @@
 (defun game ()
   (evolution (make-board (make-random-pairs 12))))
 
-(game)
