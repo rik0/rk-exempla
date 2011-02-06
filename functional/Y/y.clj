@@ -13,9 +13,9 @@
 	      (* n (f (- n 1))))))))
 
 
-(def x
-     (Y (fn [r]
-	  (
+;(def x
+;     (Y (fn [r]
+;	  (
 
 ;; (def fact
 ;;      (Y (fn [r]
